@@ -1,12 +1,12 @@
-package com.codurance.srp;
+package com.codurance.srp.entities.transactions;
 
 import java.time.LocalDate;
 
 public class Transaction {
-    private LocalDate date;
-    private int amount;
+    private final LocalDate date;
+    private final int amount;
 
-    Transaction(LocalDate date, int amount) {
+    public Transaction(LocalDate date, int amount) {
         this.date = date;
         this.amount = amount;
     }
