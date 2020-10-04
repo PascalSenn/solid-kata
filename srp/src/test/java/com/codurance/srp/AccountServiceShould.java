@@ -1,6 +1,13 @@
 package com.codurance.srp;
 
 
+import com.codurance.srp.entities.AccountService;
+import com.codurance.srp.entities.transactions.Transaction;
+import com.codurance.srp.entities.transactions.TransactionPrinter;
+import com.codurance.srp.entities.transactions.TransactionRepository;
+import com.codurance.srp.formatter.DateTimeFormat;
+import com.codurance.srp.formatter.DecimalFormatter;
+import com.codurance.srp.output.ConsoleOutput;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,11 +29,13 @@ public class AccountServiceShould {
 
     private static final int POSITIVE_AMOUNT = 100;
     private static final int NEGATIVE_AMOUNT = -POSITIVE_AMOUNT;
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
+    private static final String AMOUNT_FORMAT = "#.00";
     private static final LocalDate TODAY = LocalDate.of(2017, 9, 6);
     private static final List<Transaction> TRANSACTIONS = Arrays.asList(
-        new Transaction(LocalDate.of(2014, 4, 1), 1000),
-        new Transaction(LocalDate.of(2014, 4, 2), -100),
-        new Transaction(LocalDate.of(2014, 4, 10), 500)
+            new Transaction(LocalDate.of(2014, 4, 1), 1000),
+            new Transaction(LocalDate.of(2014, 4, 2), -100),
+            new Transaction(LocalDate.of(2014, 4, 10), 500)
     );
 
     @Mock
@@ -42,7 +51,11 @@ public class AccountServiceShould {
 
     @Before
     public void setUp() {
-        accountService = new AccountService(transactionRepository, clock, console);
+        ConsoleOutput outputChannel = new ConsoleOutput(console);
+        DateTimeFormat dateFormatter = new DateTimeFormat(DATE_FORMAT);
+        DecimalFormatter decimalFormatter = new DecimalFormatter(AMOUNT_FORMAT);
+        TransactionPrinter printer = new TransactionPrinter(outputChannel, dateFormatter, decimalFormatter);
+        accountService = new AccountService(transactionRepository, clock, printer);
         given(clock.today()).willReturn(TODAY);
     }
 
